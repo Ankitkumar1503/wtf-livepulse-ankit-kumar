@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: wtf_livepulse_db
+    environment:
+      POSTGRES_DB: wtf_livepulse
+      POSTGRES_USER: wtf
+      POSTGRES_PASSWORD: wtf_secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/db/migrations/001_initial.sql:/docker-entrypoint-initdb.d/01_initial.sql
+      - ./backend/src/db/migrations/002_indexes.sql:/docker-entrypoint-initdb.d/02_indexes.sql
+      - ./backend/src/db/migrations/003_covering_index.sql:/docker-entrypoint-initdb.d/02b_covering_index.sql
+      - ./backend/src/db/seeds/003_seed.sql:/docker-entrypoint-initdb.d/03_seed.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wtf -d wtf_livepulse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: wtf_livepulse_backend
+    environment:
+      DATABASE_URL: postgres://wtf:wtf_secret@db:5432/wtf_livepulse
+      PORT: 3001
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: wtf_livepulse_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
