@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export function CountUpNumber({ value, prefix = '', suffix = '', decimals = 0, duration = 400 }) {
+export function CountUpNumber({ value, prefix = '', suffix = '', decimals = 0, duration = 300 }) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -13,7 +13,6 @@ export function CountUpNumber({ value, prefix = '', suffix = '', decimals = 0, d
     const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      // Ease out cubic
       const easedProgress = 1 - Math.pow(1 - progress, 3);
       const current = startValue + (endValue - startValue) * easedProgress;
       
@@ -32,7 +31,7 @@ export function CountUpNumber({ value, prefix = '', suffix = '', decimals = 0, d
   return (
     <span>
       {prefix}
-      {Number(formatted).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
+      {Number(formatted).toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
       {suffix}
     </span>
   );

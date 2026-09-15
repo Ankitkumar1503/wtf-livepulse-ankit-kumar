@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { AlertCircle } from 'lucide-react';
 
-const DONUT_COLORS = ['#00D9FF', '#10B981', '#F59E0B'];
+const DONUT_COLORS = ['#3B82F6', '#10B981', '#F59E0B'];
 
 export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, crossGym, fetchAnalytics, isLoading }) {
   const [dateRange, setDateRange] = useState('7d');
@@ -20,9 +20,9 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
 
   if (isLoading || !analytics) {
     return (
-      <div style={{ display: 'grid', gap: '1.5rem' }}>
-        <SkeletonLoader height="300px" />
-        <SkeletonLoader height="400px" />
+      <div style={{ display: 'grid', gap: '1.25rem' }}>
+        <SkeletonLoader height="280px" />
+        <SkeletonLoader height="380px" />
       </div>
     );
   }
@@ -35,24 +35,24 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
   const totalMembers = memberTypeRatio.reduce((acc, r) => acc + Number(r.count), 0);
 
   return (
-    <div style={{ display: 'grid', gap: '1.5rem' }}>
+    <div style={{ display: 'grid', gap: '1.25rem' }}>
       {/* Header controls */}
       <div className="selector-row">
         <div>
-          <h2 className="section-header">Gym Operations & Revenue Analytics</h2>
+          <h2 className="section-header">Analytics & Performance</h2>
           <p className="section-subheader">
-            Comprehensive revenue breakdowns, peak occupancy heatmaps, and churn risk detection for {selectedGym.name || 'Selected Gym'}
+            Occupancy heatmaps, revenue breakdowns, and member churn risk for {selectedGym.name || 'Selected Gym'}
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <div className="nav-links">
             {['7d', '30d', '90d'].map((range) => (
               <button
                 key={range}
                 className={`nav-button ${dateRange === range ? 'active' : ''}`}
                 onClick={() => handleDateRangeChange(range)}
-                style={{ padding: '0.4rem 0.85rem' }}
+                style={{ padding: '0.35rem 0.75rem' }}
               >
                 {range.toUpperCase()}
               </button>
@@ -75,50 +75,44 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
 
       {/* 1. 7-Day Peak Hour Heatmap */}
       <div className="card">
-        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '4px' }}>
+        <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '2px', color: '#FFF' }}>
           7-Day Peak-Hour Occupancy Heatmap
         </h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '1rem' }}>
-          Aggregated check-in frequency from indexed PostgreSQL materialized view <code style={{ color: 'var(--accent-color)' }}>gym_hourly_stats</code>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>
+          Hourly check-in frequency from materialized view <code style={{ color: 'var(--accent-color)' }}>gym_hourly_stats</code>
         </p>
         <HeatmapChart heatmapData={analytics.heatmap || []} />
       </div>
 
       {/* Grid Row: Revenue by Plan + New vs Renewal Donut */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-        {/* Bar Chart with Gradient Fill */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+        {/* Revenue by Plan Type */}
         <div className="card">
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.75rem', color: '#FFF' }}>
             Revenue by Plan Type ({dateRange.toUpperCase()})
           </h3>
-          <div style={{ height: '260px' }}>
+          <div style={{ height: '240px' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revByPlan} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="barGradientCyan" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00D9FF" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#00D9FF" stopOpacity={0.4} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="plan_type" stroke="#64748B" tickLine={false} />
-                <YAxis stroke="#64748B" tickLine={false} />
+              <BarChart data={revByPlan} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="#334155" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="plan_type" stroke="#94A3B8" tickLine={false} style={{ fontSize: '0.8rem' }} />
+                <YAxis stroke="#94A3B8" tickLine={false} style={{ fontSize: '0.8rem' }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#141424', borderColor: 'rgba(255,255,255,0.1)', color: '#F1F5F9', borderRadius: '8px' }}
-                  formatter={(value) => [`$${Number(value).toLocaleString()}`, 'Revenue']}
+                  contentStyle={{ backgroundColor: '#1E293B', borderColor: '#334155', color: '#F8FAFC', borderRadius: '6px' }}
+                  formatter={(value) => [`₹${Number(value).toLocaleString('en-IN')}`, 'Revenue']}
                 />
-                <Bar dataKey="revenue" fill="url(#barGradientCyan)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="revenue" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Donut Chart with Center Label & Legend */}
+        {/* Donut Chart with Center Label */}
         <div className="card">
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.75rem', color: '#FFF' }}>
             Member Breakdown (New vs Renewal)
           </h3>
-          <div style={{ display: 'flex', alignItems: 'center', height: '260px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', height: '240px' }}>
             <div style={{ flex: 1, height: '100%', position: 'relative' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -128,28 +122,27 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
                     nameKey="member_type"
                     cx="50%"
                     cy="50%"
-                    innerRadius={65}
-                    outerRadius={95}
-                    paddingAngle={4}
+                    innerRadius={60}
+                    outerRadius={85}
+                    paddingAngle={3}
                   >
                     {memberTypeRatio.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#141424', borderColor: 'rgba(255,255,255,0.1)', color: '#F1F5F9', borderRadius: '8px' }}
+                    contentStyle={{ backgroundColor: '#1E293B', borderColor: '#334155', color: '#F8FAFC', borderRadius: '6px' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
-              {/* Centered Donut Label */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', pointerEvents: 'none' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 700 }}>{totalMembers}</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', uppercase: true }}>MEMBERS</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{totalMembers}</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Members</div>
               </div>
             </div>
 
             {/* Custom Legend */}
-            <div style={{ width: '130px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {memberTypeRatio.map((item, idx) => {
                 const pct = totalMembers > 0 ? Math.round((Number(item.count) / totalMembers) * 100) : 0;
                 return (
@@ -158,7 +151,7 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: DONUT_COLORS[idx % DONUT_COLORS.length] }}></span>
                       <span style={{ textTransform: 'capitalize' }}>{item.member_type}</span>
                     </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 700, paddingLeft: '14px' }}>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, paddingLeft: '14px' }}>
                       {item.count} <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>({pct}%)</span>
                     </div>
                   </div>
@@ -170,36 +163,29 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
       </div>
 
       {/* Grid Row: Cross-Gym Revenue Comparison + Churn Risk Panel */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
-        {/* Cross Gym Bar Chart with End-of-Bar Value Labels */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.25rem' }}>
+        {/* Cross Gym Bar Chart */}
         <div className="card">
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.75rem', color: '#FFF' }}>
             Cross-Gym Revenue Ranking (Last 30 Days)
           </h3>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: '280px' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={crossGym} layout="vertical" margin={{ top: 5, right: 60, left: 10, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="barGradientGreen" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#10B981" stopOpacity={1} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" stroke="#64748B" tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="#64748B" width={140} tickLine={false} tick={{ fontSize: 11 }} />
+              <BarChart data={crossGym} layout="vertical" margin={{ top: 5, right: 65, left: 10, bottom: 5 }}>
+                <CartesianGrid stroke="#334155" strokeDasharray="3 3" horizontal={false} />
+                <XAxis type="number" stroke="#94A3B8" tickLine={false} style={{ fontSize: '0.75rem' }} />
+                <YAxis dataKey="name" type="category" stroke="#94A3B8" width={140} tickLine={false} tick={{ fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#141424', borderColor: 'rgba(255,255,255,0.1)', color: '#F1F5F9', borderRadius: '8px' }}
-                  formatter={(val) => [`$${Number(val).toLocaleString()}`, '30-Day Revenue']}
+                  contentStyle={{ backgroundColor: '#1E293B', borderColor: '#334155', color: '#F8FAFC', borderRadius: '6px' }}
+                  formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, '30-Day Revenue']}
                 />
-                <Bar dataKey="total_revenue" fill="url(#barGradientGreen)" radius={[0, 6, 6, 0]}>
+                <Bar dataKey="total_revenue" fill="#10B981" radius={[0, 4, 4, 0]}>
                   <LabelList
                     dataKey="total_revenue"
                     position="right"
-                    formatter={(val) => `$${(Number(val) / 1000).toFixed(1)}k`}
-                    fill="#F1F5F9"
+                    formatter={(val) => `₹${(Number(val) / 1000).toFixed(1)}k`}
+                    fill="#F8FAFC"
                     fontSize={11}
-                    fontFamily="JetBrains Mono"
                   />
                 </Bar>
               </BarChart>
@@ -209,28 +195,28 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
 
         {/* Churn Risk Panel */}
         <div className="card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-            <AlertCircle color="var(--status-red)" size={20} />
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem' }}>Churn Risk Alert Panel</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.75rem' }}>
+            <AlertCircle color="var(--status-red)" size={18} />
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#FFF' }}>Churn Risk Alert Panel</h3>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-            <div style={{ flex: 1, padding: '0.85rem', backgroundColor: 'var(--status-amber-bg)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--status-amber)', fontWeight: 700 }}>HIGH RISK (45-60d)</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', marginTop: '2px' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <div style={{ flex: 1, padding: '0.75rem', backgroundColor: 'var(--status-amber-bg)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--status-amber)', fontWeight: 600 }}>HIGH RISK (45-60d)</div>
+              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
                 {churnRisk.high_risk.length}
               </div>
             </div>
 
-            <div style={{ flex: 1, padding: '0.85rem', backgroundColor: 'var(--status-red-bg)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--status-red)', fontWeight: 700 }}>CRITICAL RISK (60+d)</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div style={{ flex: 1, padding: '0.75rem', backgroundColor: 'var(--status-red-bg)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--status-red)', fontWeight: 600 }}>CRITICAL RISK (60+d)</div>
+              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
                 {churnRisk.critical_risk.length}
               </div>
             </div>
           </div>
 
-          <div style={{ maxHeight: '180px', overflowY: 'auto' }}>
+          <div style={{ maxHeight: '170px', overflowY: 'auto' }}>
             <table className="data-table" style={{ marginTop: 0 }}>
               <thead>
                 <tr>
@@ -242,15 +228,15 @@ export function Analytics({ gyms, selectedGymId, setSelectedGymId, analytics, cr
               <tbody>
                 {churnRisk.critical_risk.slice(0, 3).map((m) => (
                   <tr key={m.id}>
-                    <td style={{ fontWeight: 600 }}>{m.name}</td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}>{m.days_inactive}d</td>
+                    <td style={{ fontWeight: 500 }}>{m.name}</td>
+                    <td style={{ textAlign: 'right' }}>{m.days_inactive}d</td>
                     <td style={{ textAlign: 'right' }}><span className="feed-type anomaly">CRITICAL</span></td>
                   </tr>
                 ))}
                 {churnRisk.high_risk.slice(0, 3).map((m) => (
                   <tr key={m.id}>
-                    <td style={{ fontWeight: 600 }}>{m.name}</td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}>{m.days_inactive}d</td>
+                    <td style={{ fontWeight: 500 }}>{m.name}</td>
+                    <td style={{ textAlign: 'right' }}>{m.days_inactive}d</td>
                     <td style={{ textAlign: 'right' }}><span className="feed-type checkout">HIGH</span></td>
                   </tr>
                 ))}

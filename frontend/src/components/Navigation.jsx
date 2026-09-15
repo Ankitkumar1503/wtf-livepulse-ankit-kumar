@@ -5,8 +5,8 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
   return (
     <header className="navbar">
       <div className="brand">
-        <Activity className="brand-accent" size={26} />
-        <span>WTF <span className="brand-accent">LIVEPULSE</span></span>
+        <Activity className="brand-accent" size={22} />
+        <span>WTF LivePulse</span>
       </div>
 
       <nav className="nav-links">
@@ -15,7 +15,7 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
           onClick={() => setActiveTab('dashboard')}
           id="nav-dashboard"
         >
-          <Radio size={16} />
+          <Radio size={15} />
           Live Dashboard
         </button>
 
@@ -24,7 +24,7 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
           onClick={() => setActiveTab('analytics')}
           id="nav-analytics"
         >
-          <BarChart2 size={16} />
+          <BarChart2 size={15} />
           Analytics
         </button>
 
@@ -33,7 +33,7 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
           onClick={() => setActiveTab('anomalies')}
           id="nav-anomalies"
         >
-          <AlertTriangle size={16} />
+          <AlertTriangle size={15} />
           Anomaly Log
           {unreadAnomalyCount > 0 && (
             <span className="badge" id="anomaly-badge-count">{unreadAnomalyCount}</span>
@@ -45,7 +45,7 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
           onClick={() => setActiveTab('simulator')}
           id="nav-simulator"
         >
-          <Sliders size={16} />
+          <Sliders size={15} />
           Simulator
         </button>
       </nav>
@@ -53,7 +53,7 @@ export function Navigation({ activeTab, setActiveTab, unreadAnomalyCount, isConn
       <div className="status-indicator">
         <span className={`pulse-dot ${isConnected ? 'connected' : 'disconnected'}`}></span>
         <span style={{ color: isConnected ? 'var(--status-green)' : 'var(--status-red)' }}>
-          {isConnected ? 'WS CONNECTED' : 'WS DISCONNECTED'}
+          {isConnected ? 'Connected' : 'Disconnected'}
         </span>
       </div>
     </header>

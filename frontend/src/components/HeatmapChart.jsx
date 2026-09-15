@@ -16,11 +16,11 @@ export function HeatmapChart({ heatmapData = [] }) {
   const getCellColor = (count) => {
     if (!count || count === 0) return 'rgba(255, 255, 255, 0.03)';
     const ratio = count / maxCount;
-    if (ratio < 0.20) return 'rgba(0, 217, 255, 0.15)';
-    if (ratio < 0.40) return 'rgba(0, 217, 255, 0.35)';
-    if (ratio < 0.60) return 'rgba(0, 217, 255, 0.60)';
-    if (ratio < 0.80) return 'rgba(0, 217, 255, 0.82)';
-    return 'rgba(0, 217, 255, 1.0)';
+    if (ratio < 0.20) return 'rgba(59, 130, 246, 0.20)';
+    if (ratio < 0.40) return 'rgba(59, 130, 246, 0.40)';
+    if (ratio < 0.60) return 'rgba(59, 130, 246, 0.65)';
+    if (ratio < 0.80) return 'rgba(59, 130, 246, 0.85)';
+    return 'rgba(59, 130, 246, 1.0)';
   };
 
   return (
@@ -56,11 +56,11 @@ export function HeatmapChart({ heatmapData = [] }) {
         <span>Low</span>
         <div style={{ display: 'flex', gap: '3px' }}>
           <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(255,255,255,0.03)' }}></span>
-          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(0, 217, 255, 0.15)' }}></span>
-          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(0, 217, 255, 0.35)' }}></span>
-          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(0, 217, 255, 0.60)' }}></span>
-          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(0, 217, 255, 0.82)' }}></span>
-          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(0, 217, 255, 1.0)' }}></span>
+          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(59, 130, 246, 0.20)' }}></span>
+          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(59, 130, 246, 0.40)' }}></span>
+          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(59, 130, 246, 0.65)' }}></span>
+          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(59, 130, 246, 0.85)' }}></span>
+          <span style={{ width: '16px', height: '12px', borderRadius: '2px', backgroundColor: 'rgba(59, 130, 246, 1.0)' }}></span>
         </div>
         <span>High Peak</span>
       </div>
