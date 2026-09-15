@@ -57,8 +57,9 @@ body {
   color: var(--text-primary);
   font-family: var(--font-body);
   min-height: 100vh;
-  min-width: 1280px;
-  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -202,10 +203,11 @@ body {
 /* Layout Content */
 .main-content {
   flex: 1;
-  padding: var(--space-lg);
-  max-width: 1600px;
+  padding: 1.5rem;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Summary KPI Cards Grid */
